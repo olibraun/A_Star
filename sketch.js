@@ -31,6 +31,8 @@ class Cell {
     this.height = height / grid_height;
     this.x = i*this.width;
     this.y = j*this.height;
+
+    this.free = true;
   }
 
   render() {
