@@ -1,5 +1,5 @@
-const grid_width = 100;
-const grid_height = 100;
+const grid_width = 10;
+const grid_height = 10;
 let grid = [];
 
 function setup() {
