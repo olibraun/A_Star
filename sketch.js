@@ -20,13 +20,14 @@ function setup() {
   start = grid[0][0];
   goal = grid[grid_width][grid_height];
   openSet = [start];
+  closedSet = [];
   start.g = 0;
   start.f = heuristic(start, goal);
 }
 
 function draw() {
   // A* loop
-  if(openSet.len > 0) {
+  if(openSet.length > 0) {
     // current := the node in openSet having the lowest fScore value
     let current = openSet[0];
     openSet.forEach(node => {
@@ -34,6 +35,7 @@ function draw() {
         current = node;
       }
     });
+    console.log(current);
     if(current == goal) {
       console.log('reconstruct_path(cameFrom, current);');
     }
@@ -65,6 +67,12 @@ function draw() {
       cell.render();
     });
   });
+  openSet.forEach(cell => {
+    cell.render(color(0, 255, 0));
+  });
+  closedSet.forEach(cell => {
+    cell.render(color(255, 0, 0));
+  });
 }
 
 class Cell {
@@ -84,11 +92,11 @@ class Cell {
   }
 
   getNeighbors() {
-    result = [];
-    leftLimit = max(this.i - 1, 0);
-    rightLimit = min(this.i + 1, grid_width - 1);
-    topLimit = max(this.j - 1, 0);
-    bottomLimit = min(this.j + 1, grid_height - 1);
+    let result = [];
+    let leftLimit = max(this.i - 1, 0);
+    let rightLimit = min(this.i + 1, grid_width - 1);
+    let topLimit = max(this.j - 1, 0);
+    let bottomLimit = min(this.j + 1, grid_height - 1);
     for(let r = leftLimit; r <= rightLimit; r++) {
       for(let s = topLimit; s <= bottomLimit; s++) {
         result.push(grid[r][s]);
@@ -97,11 +105,14 @@ class Cell {
     return result;
   }
 
-  render() {
+  render(color) {
     push();
     stroke(255);
     strokeWeight(.25);
     noFill();
+    if(color) {
+      fill(color);
+    }
     rect(this.x, this.y, this.width, this.height);
     pop();
   }
