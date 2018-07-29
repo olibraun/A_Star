@@ -84,7 +84,17 @@ class Cell {
   }
 
   getNeighbors() {
-    return [];
+    result = [];
+    leftLimit = max(this.i - 1, 0);
+    rightLimit = min(this.i + 1, grid_width - 1);
+    topLimit = max(this.j - 1, 0);
+    bottomLimit = min(this.j + 1, grid_height - 1);
+    for(let r = leftLimit; r <= rightLimit; r++) {
+      for(let s = topLimit; s <= bottomLimit; s++) {
+        result.push(grid[r][s]);
+      }
+    }
+    return result;
   }
 
   render() {
