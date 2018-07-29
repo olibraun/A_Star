@@ -18,7 +18,7 @@ function setup() {
   }
   
   start = grid[0][0];
-  goal = grid[grid_width][grid_height];
+  goal = grid[grid_width - 1][grid_height - 1];
   openSet = [start];
   closedSet = [];
   start.g = 0;
