@@ -6,7 +6,7 @@ let start, goal, openSet, closedSet, path;
 
 function setup() {
   createCanvas(800, 800);
-  background(51);
+  background(255);
   for(let i = 0; i <= grid_width; i++) {
     if(!(grid[i])) {
       grid[i] = [];
@@ -81,7 +81,7 @@ function draw() {
   }
 
   // drawing
-  background(51);
+  background(255);
   grid.forEach(row => {
     row.forEach(cell => {
       cell.render();
@@ -135,14 +135,14 @@ class Cell {
 
   render(color) {
     push();
-    stroke(255);
+    stroke(0);
     strokeWeight(.25);
     noFill();
     if(color) {
       fill(color);
     }
     if(!this.free) {
-      fill(168, 98, 0);
+      fill(0);
     }
     rect(this.x, this.y, this.width, this.height);
     pop();
