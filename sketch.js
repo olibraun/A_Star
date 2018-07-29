@@ -35,11 +35,27 @@ function draw() {
       }
     });
     if(current == goal) {
-      //return reconstruct_path(cameFrom, current);
+      console.log('reconstruct_path(cameFrom, current);');
     }
 
     //openSet.remove(current);
-    //closedSet.add(current);
+    closedSet.push(current);
+
+    current.getNeighbors().forEach(neighbor => {
+      if(!neighbor in closedSet) {
+        tentative_gScore = current.g + heuristic(current, neighbor);
+
+        if(!neighbor in openSet) {
+          // Discover a new node
+          openSet.push(neighbor);
+        }
+        if(tentative_gScore < neighbor.g) {
+          neighbor.cameFrom = current;
+          neighbor.g = tentative_gScore;
+          neighbor.f = neighbor.g + heuristic(neighbor, goal);
+        }
+      }
+    });
   }
 
   // drawing
@@ -65,6 +81,10 @@ class Cell {
     this.cameFrom = null;
 
     this.free = true;
+  }
+
+  getNeighbors() {
+    return [];
   }
 
   render() {
