@@ -34,6 +34,12 @@ function draw() {
         current = node;
       }
     });
+    if(current == goal) {
+      //return reconstruct_path(cameFrom, current);
+    }
+
+    //openSet.remove(current);
+    //closedSet.add(current);
   }
 
   // drawing
@@ -56,6 +62,8 @@ class Cell {
 
     this.g = Infinity;
     this.f = Infinity;
+    this.cameFrom = null;
+
     this.free = true;
   }
 
