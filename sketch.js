@@ -4,9 +4,23 @@ let grid = [];
 
 let start, goal, openSet, closedSet, path;
 
+let loop = true;
+
+const canvas = document.getElementById('canvas');
+const context = canvas.getContext('2d');
+const width = canvas.width;
+const height = canvas.height;
+
+function min(a, b) {
+  return a < b ? a : b;
+}
+
+function max(a, b) {
+  return a > b ? a : b;
+}
+
 function setup() {
-  createCanvas(800, 800);
-  background(255);
+  context.clearRect(0, 0, canvas.width, canvas.height);
   grid = [];
   for(let i = 0; i <= grid_width; i++) {
     if(!(grid[i])) {
@@ -33,8 +47,10 @@ function setup() {
 }
 
 function draw() {
+  console.log('Start draw.');
   // A* loop
   if(openSet.length > 0) {
+    console.log('Start A* loop.');
     // current := the node in openSet having the lowest fScore value
     let current = openSet[0];
     openSet.forEach(node => {
@@ -43,10 +59,9 @@ function draw() {
       }
     });
     if(current == goal) {
-      noLoop();
+      loop = false;
       console.log('Done');
       console.log(current);
-      debugger;
     }
 
     removeFromArray(openSet,current);
@@ -88,21 +103,32 @@ function draw() {
   }
 
   // drawing
-  background(255);
+  console.log('Start drawing.');
+  context.clearRect(0, 0, width, height);
   grid.forEach(row => {
     row.forEach(cell => {
       cell.render();
     });
   });
+  console.log('Grid rendered.');
   openSet.forEach(cell => {
-    cell.render(color(0, 255, 0));
+    cell.render('#fff');
   });
+  console.log('Open set rendered.');
   closedSet.forEach(cell => {
-    cell.render(color(255, 0, 0));
+    cell.render('#fff');
   });
+  console.log('Closed set rendered.');
   path.forEach(cell => {
-    cell.render(color(0, 0, 255));
+    cell.render('#fff');
   });
+  console.log('Path rendered.');
+
+  console.log('End draw with requestAnimationFrame().');
+
+  if(loop) {
+    requestAnimationFrame(draw);
+  }
 }
 
 class Cell {
@@ -119,7 +145,7 @@ class Cell {
     this.cameFrom = null;
 
     this.free = true;
-    if(random(1) < 0.25) {
+    if(Math.random(1) < 0.25) {
       this.free = false;
     }
   }
@@ -142,18 +168,19 @@ class Cell {
   }
 
   render(color) {
-    push();
-    stroke(0);
-    strokeWeight(.25);
-    noFill();
+    context.rect(this.x, this.y, this.width, this.height);
+    context.strokeStyle = '#000000';
+    context.lineWidth = .25;
     if(color) {
-      fill(color);
+      context.fillStyle = color;
     }
     if(!this.free) {
-      fill(0);
+      context.fillStyle = '#000000';
+    } else {
+      context.fillStyle = '#FFFFFF';
     }
-    rect(this.x, this.y, this.width, this.height);
-    pop();
+    context.fill();
+    context.stroke();
   }
 }
 
@@ -168,3 +195,6 @@ function removeFromArray(arr, elt) {
     }
   }
 }
+
+setup();
+draw();
