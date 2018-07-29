@@ -126,6 +126,7 @@ class Cell {
     for(let r = leftLimit; r <= rightLimit; r++) {
       for(let s = topLimit; s <= bottomLimit; s++) {
         if(r !== this.i || s !== this.j) {
+          // exclude self
           result.push(grid[r][s]);
         }
       }
