@@ -107,6 +107,6 @@ class Cell {
   }
 }
 
-function heuristic(a, b) {
-  return 0;
+function heuristic(cella, cellb) {
+  return (cella.x - cellb.x)**2 + (cella.y - cellb.y)**2
 }
