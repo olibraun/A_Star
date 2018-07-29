@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.5.10/p5.min.js"></script>
-    <script src="sketch.js"></script>
-    <link rel="stylesheet" type="text/css" href="style.css">
+    <script src="p5.js"></script>
   </head>
   <body>
+    Grid: <input type="number" id="grid_input" default="50" autofocus>  <button onclick="grid_width = document.getElementById('grid_input').value; grid_height = grid_width; setup(); loop();">Restart</button><br>
+    <script src="sketch.js"></script>
   </body>
 </html>

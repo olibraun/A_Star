@@ -1,5 +1,5 @@
 let grid_width = 50;
-let grid_height = 50;
+let grid_height = grid_width;
 let grid = [];
 
 let start, goal, openSet, closedSet, path;
@@ -7,6 +7,7 @@ let start, goal, openSet, closedSet, path;
 function setup() {
   createCanvas(800, 800);
   background(255);
+  grid = [];
   for(let i = 0; i <= grid_width; i++) {
     if(!(grid[i])) {
       grid[i] = [];
@@ -16,11 +17,15 @@ function setup() {
       grid[i][j] = new Cell(i, j);
     }
   }
+
+  console.log('Grid set up');
+  console.table(grid);
   
   start = grid[0][0];
   goal = grid[grid_width - 1][grid_height - 1];
   openSet = [start];
   closedSet = [];
+  path = [];
   start.g = 0;
   start.f = heuristic(start, goal);
   start.free = true;
@@ -40,6 +45,8 @@ function draw() {
     if(current == goal) {
       noLoop();
       console.log('Done');
+      console.log(current);
+      debugger;
     }
 
     removeFromArray(openSet,current);
