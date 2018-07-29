@@ -40,14 +40,15 @@ function draw() {
       console.log('reconstruct_path(cameFrom, current);');
     }
 
-    //openSet.remove(current);
+    removeFromArray(openSet,current);
     closedSet.push(current);
 
     current.getNeighbors().forEach(neighbor => {
-      if(!neighbor in closedSet) {
+      if(!closedSet.includes(neighbor)) {
+        console.log('I am here.');
         tentative_gScore = current.g + heuristic(current, neighbor);
 
-        if(!neighbor in openSet) {
+        if(!openSet.includes(neighbor)) {
           // Discover a new node
           openSet.push(neighbor);
         }
@@ -99,7 +100,9 @@ class Cell {
     let bottomLimit = min(this.j + 1, grid_height - 1);
     for(let r = leftLimit; r <= rightLimit; r++) {
       for(let s = topLimit; s <= bottomLimit; s++) {
-        result.push(grid[r][s]);
+        if(r !== this.i || s !== this.j) {
+          result.push(grid[r][s]);
+        }
       }
     }
     return result;
@@ -120,4 +123,12 @@ class Cell {
 
 function heuristic(cella, cellb) {
   return (cella.x - cellb.x)**2 + (cella.y - cellb.y)**2
+}
+
+function removeFromArray(arr, elt) {
+  for(let i = arr.length - 1; i >= 0; i--) {
+    if(elt == arr[i]) {
+      arr.splice(i, 1);
+    }
+  }
 }
