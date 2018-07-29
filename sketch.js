@@ -2,6 +2,8 @@ const grid_width = 10;
 const grid_height = 10;
 let grid = [];
 
+let start, goal, openSet, closedSet;
+
 function setup() {
   createCanvas(800, 800);
   background(51);
@@ -14,9 +16,21 @@ function setup() {
       grid[i][j] = new Cell(i, j);
     }
   }
+  
+  start = grid[0][0];
+  goal = grid[grid_width][grid_height];
+  openSet = [start];
+  start.g = 0;
+  start.f = heuristic(start, goal);
 }
 
 function draw() {
+  // A* loop
+  if(openSet.len > 0) {
+
+  }
+
+  // drawing
   background(51);
   grid.forEach(row => {
     row.forEach(cell => {
@@ -27,11 +41,15 @@ function draw() {
 
 class Cell {
   constructor(i,j) {
+    this.i = i;
+    this.j = j;
     this.width = width / grid_width;
     this.height = height / grid_height;
     this.x = i*this.width;
     this.y = j*this.height;
 
+    this.g = Infinity;
+    this.f = Infinity;
     this.free = true;
   }
 
@@ -43,4 +61,8 @@ class Cell {
     rect(this.x, this.y, this.width, this.height);
     pop();
   }
+}
+
+function heuristic(a, b) {
+  return 0;
 }
