@@ -1,5 +1,5 @@
-const grid_width = 5;
-const grid_height = 5;
+const grid_width = 80;
+const grid_height = 80;
 let grid = [];
 
 let start, goal, openSet, closedSet, path;
@@ -29,7 +29,6 @@ function setup() {
 
 function draw() {
   // A* loop
-  path = [];
   if(openSet.length > 0) {
     // current := the node in openSet having the lowest fScore value
     let current = openSet[0];
@@ -72,6 +71,7 @@ function draw() {
     });
 
     // Find the path by working backwards
+    path = [];
     var temp = current;
     path.push(temp);
     while (temp.cameFrom) {
@@ -112,7 +112,7 @@ class Cell {
     this.cameFrom = null;
 
     this.free = true;
-    if(random(1) < 0) {
+    if(random(1) < 0.25) {
       this.free = false;
     }
   }
@@ -142,7 +142,7 @@ class Cell {
       fill(color);
     }
     if(!this.free) {
-      fill(255);
+      fill(168, 98, 0);
     }
     rect(this.x, this.y, this.width, this.height);
     pop();
