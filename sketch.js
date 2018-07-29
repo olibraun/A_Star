@@ -1,5 +1,5 @@
-const grid_width = 80;
-const grid_height = 80;
+const grid_width = 50;
+const grid_height = 50;
 let grid = [];
 
 let start, goal, openSet, closedSet, path;
