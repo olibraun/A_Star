@@ -1,8 +1,8 @@
-const grid_width = 10;
-const grid_height = 10;
+const grid_width = 5;
+const grid_height = 5;
 let grid = [];
 
-let start, goal, openSet, closedSet;
+let start, goal, openSet, closedSet, path;
 
 function setup() {
   createCanvas(800, 800);
@@ -23,10 +23,13 @@ function setup() {
   closedSet = [];
   start.g = 0;
   start.f = heuristic(start, goal);
+  start.free = true;
+  goal.free = true;
 }
 
 function draw() {
   // A* loop
+  path = [];
   if(openSet.length > 0) {
     // current := the node in openSet having the lowest fScore value
     let current = openSet[0];
@@ -35,31 +38,46 @@ function draw() {
         current = node;
       }
     });
-    console.log(current);
     if(current == goal) {
       noLoop();
-      console.log('reconstruct_path(cameFrom, current);');
+      console.log('Done');
     }
 
     removeFromArray(openSet,current);
     closedSet.push(current);
 
     current.getNeighbors().forEach(neighbor => {
-      if(!closedSet.includes(neighbor)) {
-        console.log('I am here.');
+      if(!closedSet.includes(neighbor) && neighbor.free) {
         tentative_gScore = current.g + heuristic(current, neighbor);
 
-        if(!openSet.includes(neighbor)) {
+        let pathImproved = false;
+        if(openSet.includes(neighbor)) {
+          if(tentative_gScore < neighbor.g) {
+            neighbor.g = tentative_gScore;
+            pathImproved = true;
+          }
+        } else {
           // Discover a new node
           openSet.push(neighbor);
-        }
-        if(tentative_gScore < neighbor.g) {
-          neighbor.cameFrom = current;
           neighbor.g = tentative_gScore;
+          pathImproved = true;
+        }
+
+        if(pathImproved) {
+          neighbor.cameFrom = current;
+          //neighbor.g = tentative_gScore;
           neighbor.f = neighbor.g + heuristic(neighbor, goal);
         }
       }
     });
+
+    // Find the path by working backwards
+    var temp = current;
+    path.push(temp);
+    while (temp.cameFrom) {
+      path.push(temp.cameFrom);
+      temp = temp.cameFrom;
+    }
   }
 
   // drawing
@@ -74,6 +92,9 @@ function draw() {
   });
   closedSet.forEach(cell => {
     cell.render(color(255, 0, 0));
+  });
+  path.forEach(cell => {
+    cell.render(color(0, 0, 255));
   });
 }
 
@@ -91,6 +112,9 @@ class Cell {
     this.cameFrom = null;
 
     this.free = true;
+    if(random(1) < 0) {
+      this.free = false;
+    }
   }
 
   getNeighbors() {
@@ -117,13 +141,16 @@ class Cell {
     if(color) {
       fill(color);
     }
+    if(!this.free) {
+      fill(255);
+    }
     rect(this.x, this.y, this.width, this.height);
     pop();
   }
 }
 
 function heuristic(cella, cellb) {
-  return (cella.x - cellb.x)**2 + (cella.y - cellb.y)**2
+  return Math.sqrt( (cella.x - cellb.x)**2 + (cella.y - cellb.y)**2 );
 }
 
 function removeFromArray(arr, elt) {
