@@ -27,7 +27,13 @@ function setup() {
 function draw() {
   // A* loop
   if(openSet.len > 0) {
-
+    // current := the node in openSet having the lowest fScore value
+    let current = openSet[0];
+    openSet.forEach(node => {
+      if(node.f < current.f) {
+        current = node;
+      }
+    });
   }
 
   // drawing
