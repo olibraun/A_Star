@@ -37,6 +37,7 @@ function draw() {
     });
     console.log(current);
     if(current == goal) {
+      noLoop();
       console.log('reconstruct_path(cameFrom, current);');
     }
 
