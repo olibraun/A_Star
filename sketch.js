@@ -105,13 +105,13 @@ function draw() {
     });
   });
   openSet.forEach(cell => {
-    cell.render('#00ff00');
+    cell.render('#00FF00');
   });
   closedSet.forEach(cell => {
-    cell.render('#ff0000');
+    cell.render('#FF0000');
   });
   path.forEach(cell => {
-    cell.render('#0000ff');
+    cell.render('#0000FF');
   });
   if(loop) {
     requestAnimationFrame(draw);
@@ -159,13 +159,13 @@ class Cell {
     context.rect(this.x, this.y, this.width, this.height);
     context.strokeStyle = '#000000';
     context.lineWidth = .25;
-    if(color) {
-      context.fillStyle = color;
-    }
     if(!this.free) {
       context.fillStyle = '#000000';
     } else {
       context.fillStyle = '#FFFFFF';
+    }
+    if(color) {
+      context.fillStyle = color;
     }
     context.fill();
     context.stroke();
