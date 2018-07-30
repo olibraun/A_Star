@@ -45,6 +45,13 @@ function setup() {
   start.f = heuristic(start, goal);
   start.free = true;
   goal.free = true;
+
+  context.clearRect(0, 0, width, height);
+  grid.forEach(row => {
+    row.forEach(cell => {
+      cell.render();
+    });
+  });
 }
 
 function draw() {
@@ -101,12 +108,6 @@ function draw() {
   }
 
   // drawing
-  context.clearRect(0, 0, width, height);
-  grid.forEach(row => {
-    row.forEach(cell => {
-      cell.render();
-    });
-  });
   openSet.forEach(cell => {
     cell.render('#00FF00');
   });
