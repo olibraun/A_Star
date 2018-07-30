@@ -11,6 +11,8 @@ const context = canvas.getContext('2d');
 const width = canvas.width;
 const height = canvas.height;
 
+let requestID;
+
 function min(a, b) {
   return a < b ? a : b;
 }
@@ -114,7 +116,7 @@ function draw() {
     cell.render('#0000FF');
   });
   if(loop) {
-    requestAnimationFrame(draw);
+    requestID = requestAnimationFrame(draw);
   }
 }
 
@@ -183,6 +185,15 @@ function removeFromArray(arr, elt) {
       arr.splice(i, 1);
     }
   }
+}
+
+function restartSimulation() {
+  cancelAnimationFrame(requestID);
+  grid_width = document.getElementById('grid_input').value;
+  grid_height = grid_width;
+  loop = true;
+  setup();
+  draw();
 }
 
 setup();
