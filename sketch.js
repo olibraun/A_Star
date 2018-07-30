@@ -4,9 +4,27 @@ let grid = [];
 
 let start, goal, openSet, closedSet, path;
 
+let loop = true;
+
+let number_of_simulation_steps = 1;
+
+const canvas = document.getElementById('canvas');
+const context = canvas.getContext('2d');
+const width = canvas.width;
+const height = canvas.height;
+
+let requestID;
+
+function min(a, b) {
+  return a < b ? a : b;
+}
+
+function max(a, b) {
+  return a > b ? a : b;
+}
+
 function setup() {
-  createCanvas(800, 800);
-  background(255);
+  context.clearRect(0, 0, canvas.width, canvas.height);
   grid = [];
   for(let i = 0; i <= grid_width; i++) {
     if(!(grid[i])) {
@@ -17,9 +35,6 @@ function setup() {
       grid[i][j] = new Cell(i, j);
     }
   }
-
-  console.log('Grid set up');
-  console.table(grid);
   
   start = grid[0][0];
   goal = grid[grid_width - 1][grid_height - 1];
@@ -30,79 +45,81 @@ function setup() {
   start.f = heuristic(start, goal);
   start.free = true;
   goal.free = true;
-}
 
-function draw() {
-  // A* loop
-  if(openSet.length > 0) {
-    // current := the node in openSet having the lowest fScore value
-    let current = openSet[0];
-    openSet.forEach(node => {
-      if(node.f < current.f) {
-        current = node;
-      }
-    });
-    if(current == goal) {
-      noLoop();
-      console.log('Done');
-      console.log(current);
-      debugger;
-    }
-
-    removeFromArray(openSet,current);
-    closedSet.push(current);
-
-    current.getNeighbors().forEach(neighbor => {
-      if(!closedSet.includes(neighbor) && neighbor.free) {
-        tentative_gScore = current.g + heuristic(current, neighbor);
-
-        let pathImproved = false;
-        if(openSet.includes(neighbor)) {
-          if(tentative_gScore < neighbor.g) {
-            neighbor.g = tentative_gScore;
-            pathImproved = true;
-          }
-        } else {
-          // Discover a new node
-          openSet.push(neighbor);
-          neighbor.g = tentative_gScore;
-          pathImproved = true;
-        }
-
-        if(pathImproved) {
-          neighbor.cameFrom = current;
-          //neighbor.g = tentative_gScore;
-          neighbor.f = neighbor.g + heuristic(neighbor, goal);
-        }
-      }
-    });
-
-    // Find the path by working backwards
-    path = [];
-    var temp = current;
-    path.push(temp);
-    while (temp.cameFrom) {
-      path.push(temp.cameFrom);
-      temp = temp.cameFrom;
-    }
-  }
-
-  // drawing
-  background(255);
+  context.clearRect(0, 0, width, height);
   grid.forEach(row => {
     row.forEach(cell => {
       cell.render();
     });
   });
+}
+
+function draw() {
+  // A* loop
+  for(let i = 0; i < number_of_simulation_steps; i++) {
+    if(openSet.length > 0) {
+      // current := the node in openSet having the lowest fScore value
+      let current = openSet[0];
+      openSet.forEach(node => {
+        if(node.f < current.f) {
+          current = node;
+        }
+      });
+      if(current == goal) {
+        loop = false;
+        console.log('Done');
+        console.log(current);
+        // Find the path by working backwards
+        reconstructPath(current);
+        break;
+      }
+  
+      removeFromArray(openSet,current);
+      closedSet.push(current);
+  
+      current.getNeighbors().forEach(neighbor => {
+        if(!closedSet.includes(neighbor) && neighbor.free) {
+          tentative_gScore = current.g + heuristic(current, neighbor);
+  
+          let pathImproved = false;
+          if(openSet.includes(neighbor)) {
+            if(tentative_gScore < neighbor.g) {
+              neighbor.g = tentative_gScore;
+              pathImproved = true;
+            }
+          } else {
+            // Discover a new node
+            openSet.push(neighbor);
+            neighbor.g = tentative_gScore;
+            pathImproved = true;
+          }
+  
+          if(pathImproved) {
+            neighbor.cameFrom = current;
+            neighbor.g = tentative_gScore;
+            neighbor.f = neighbor.g + heuristic(neighbor, goal);
+          }
+        }
+      });
+  
+      // Find the path by working backwards
+      reconstructPath(current);
+    }
+  }
+
+  // drawing
   openSet.forEach(cell => {
-    cell.render(color(0, 255, 0));
+    cell.render('#00FF00');
   });
   closedSet.forEach(cell => {
-    cell.render(color(255, 0, 0));
+    cell.render('#FF0000');
   });
   path.forEach(cell => {
-    cell.render(color(0, 0, 255));
+    cell.render('#0000FF');
   });
+  if(loop) {
+    requestID = requestAnimationFrame(draw);
+  }
 }
 
 class Cell {
@@ -119,7 +136,7 @@ class Cell {
     this.cameFrom = null;
 
     this.free = true;
-    if(random(1) < 0.25) {
+    if(Math.random(1) < 0.25) {
       this.free = false;
     }
   }
@@ -142,18 +159,31 @@ class Cell {
   }
 
   render(color) {
-    push();
-    stroke(0);
-    strokeWeight(.25);
-    noFill();
-    if(color) {
-      fill(color);
-    }
+    context.beginPath();
+    context.rect(this.x, this.y, this.width, this.height);
+    context.strokeStyle = '#000000';
+    context.lineWidth = .25;
     if(!this.free) {
-      fill(0);
+      context.fillStyle = '#000000';
+    } else {
+      context.fillStyle = '#FFFFFF';
     }
-    rect(this.x, this.y, this.width, this.height);
-    pop();
+    if(color) {
+      context.fillStyle = color;
+    }
+    context.fill();
+    context.stroke();
+    context.closePath();
+  }
+}
+
+function reconstructPath(current) {
+  path = [];
+  var temp = current;
+  path.push(temp);
+  while (temp.cameFrom) {
+    path.push(temp.cameFrom);
+    temp = temp.cameFrom;
   }
 }
 
@@ -168,3 +198,16 @@ function removeFromArray(arr, elt) {
     }
   }
 }
+
+function restartSimulation() {
+  cancelAnimationFrame(requestID);
+  grid_width = document.getElementById('grid_input').value;
+  grid_height = grid_width;
+  number_of_simulation_steps = document.getElementById('step_input').value;
+  loop = true;
+  setup();
+  draw();
+}
+
+setup();
+draw();
