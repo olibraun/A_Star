@@ -39,14 +39,14 @@ for(let i = 0; i <= grid_width; i++) {
   }
 }
 
-function draw(time) {
+function draw() {
   context.clearRect(0, 0, width, height);
   grid.forEach(row => {
     row.forEach(cell => {
       cell.render();
     });
   });
-  requestAnimationFrame(draw, time);
+  requestAnimationFrame(draw);
 }
 
 draw();
