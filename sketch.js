@@ -6,7 +6,7 @@ let start, goal, openSet, closedSet, path;
 
 let loop = true;
 
-let number_of_simulation_steps = 10;
+let number_of_simulation_steps = 1;
 
 const canvas = document.getElementById('canvas');
 const context = canvas.getContext('2d');
@@ -202,6 +202,7 @@ function restartSimulation() {
   cancelAnimationFrame(requestID);
   grid_width = document.getElementById('grid_input').value;
   grid_height = grid_width;
+  number_of_simulation_steps = document.getElementById('step_input').value;
   loop = true;
   setup();
   draw();
