@@ -31,9 +31,6 @@ function setup() {
       grid[i][j] = new Cell(i, j);
     }
   }
-
-  console.log('Grid set up');
-  console.table(grid);
   
   start = grid[0][0];
   goal = grid[grid_width - 1][grid_height - 1];
@@ -47,10 +44,8 @@ function setup() {
 }
 
 function draw() {
-  console.log('Start draw.');
   // A* loop
   if(openSet.length > 0) {
-    console.log('Start A* loop.');
     // current := the node in openSet having the lowest fScore value
     let current = openSet[0];
     openSet.forEach(node => {
@@ -86,7 +81,7 @@ function draw() {
 
         if(pathImproved) {
           neighbor.cameFrom = current;
-          //neighbor.g = tentative_gScore;
+          neighbor.g = tentative_gScore;
           neighbor.f = neighbor.g + heuristic(neighbor, goal);
         }
       }
@@ -103,29 +98,21 @@ function draw() {
   }
 
   // drawing
-  console.log('Start drawing.');
   context.clearRect(0, 0, width, height);
   grid.forEach(row => {
     row.forEach(cell => {
       cell.render();
     });
   });
-  console.log('Grid rendered.');
   openSet.forEach(cell => {
-    cell.render('#fff');
+    cell.render('#00ff00');
   });
-  console.log('Open set rendered.');
   closedSet.forEach(cell => {
-    cell.render('#fff');
+    cell.render('#ff0000');
   });
-  console.log('Closed set rendered.');
   path.forEach(cell => {
-    cell.render('#fff');
+    cell.render('#0000ff');
   });
-  console.log('Path rendered.');
-
-  console.log('End draw with requestAnimationFrame().');
-
   if(loop) {
     requestAnimationFrame(draw);
   }
@@ -168,6 +155,7 @@ class Cell {
   }
 
   render(color) {
+    context.beginPath();
     context.rect(this.x, this.y, this.width, this.height);
     context.strokeStyle = '#000000';
     context.lineWidth = .25;
@@ -181,6 +169,7 @@ class Cell {
     }
     context.fill();
     context.stroke();
+    context.closePath();
   }
 }
 
