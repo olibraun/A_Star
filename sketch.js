@@ -6,6 +6,8 @@ let start, goal, openSet, closedSet, path;
 
 let loop = true;
 
+let number_of_simulation_steps = 10;
+
 const canvas = document.getElementById('canvas');
 const context = canvas.getContext('2d');
 const width = canvas.width;
@@ -47,55 +49,54 @@ function setup() {
 
 function draw() {
   // A* loop
-  if(openSet.length > 0) {
-    // current := the node in openSet having the lowest fScore value
-    let current = openSet[0];
-    openSet.forEach(node => {
-      if(node.f < current.f) {
-        current = node;
+  for(let i = 0; i < number_of_simulation_steps; i++) {
+    if(openSet.length > 0) {
+      // current := the node in openSet having the lowest fScore value
+      let current = openSet[0];
+      openSet.forEach(node => {
+        if(node.f < current.f) {
+          current = node;
+        }
+      });
+      if(current == goal) {
+        loop = false;
+        console.log('Done');
+        console.log(current);
+        // Find the path by working backwards
+        reconstructPath(current);
+        break;
       }
-    });
-    if(current == goal) {
-      loop = false;
-      console.log('Done');
-      console.log(current);
-    }
-
-    removeFromArray(openSet,current);
-    closedSet.push(current);
-
-    current.getNeighbors().forEach(neighbor => {
-      if(!closedSet.includes(neighbor) && neighbor.free) {
-        tentative_gScore = current.g + heuristic(current, neighbor);
-
-        let pathImproved = false;
-        if(openSet.includes(neighbor)) {
-          if(tentative_gScore < neighbor.g) {
+  
+      removeFromArray(openSet,current);
+      closedSet.push(current);
+  
+      current.getNeighbors().forEach(neighbor => {
+        if(!closedSet.includes(neighbor) && neighbor.free) {
+          tentative_gScore = current.g + heuristic(current, neighbor);
+  
+          let pathImproved = false;
+          if(openSet.includes(neighbor)) {
+            if(tentative_gScore < neighbor.g) {
+              neighbor.g = tentative_gScore;
+              pathImproved = true;
+            }
+          } else {
+            // Discover a new node
+            openSet.push(neighbor);
             neighbor.g = tentative_gScore;
             pathImproved = true;
           }
-        } else {
-          // Discover a new node
-          openSet.push(neighbor);
-          neighbor.g = tentative_gScore;
-          pathImproved = true;
+  
+          if(pathImproved) {
+            neighbor.cameFrom = current;
+            neighbor.g = tentative_gScore;
+            neighbor.f = neighbor.g + heuristic(neighbor, goal);
+          }
         }
-
-        if(pathImproved) {
-          neighbor.cameFrom = current;
-          neighbor.g = tentative_gScore;
-          neighbor.f = neighbor.g + heuristic(neighbor, goal);
-        }
-      }
-    });
-
-    // Find the path by working backwards
-    path = [];
-    var temp = current;
-    path.push(temp);
-    while (temp.cameFrom) {
-      path.push(temp.cameFrom);
-      temp = temp.cameFrom;
+      });
+  
+      // Find the path by working backwards
+      reconstructPath(current);
     }
   }
 
@@ -172,6 +173,16 @@ class Cell {
     context.fill();
     context.stroke();
     context.closePath();
+  }
+}
+
+function reconstructPath(current) {
+  path = [];
+  var temp = current;
+  path.push(temp);
+  while (temp.cameFrom) {
+    path.push(temp.cameFrom);
+    temp = temp.cameFrom;
   }
 }
 
