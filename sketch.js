@@ -202,6 +202,11 @@ function removeFromArray(arr, elt) {
 function restartSimulation() {
   cancelAnimationFrame(requestID);
   grid_width = document.getElementById('grid_input').value;
+  if(grid_width > 350) {
+    grid_width = 350;
+    document.getElementById('grid_input').value = 350;
+    window.confirm('Size limited to 350.');
+  }
   grid_height = grid_width;
   number_of_simulation_steps = document.getElementById('step_input').value;
   loop = true;
