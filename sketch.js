@@ -18,6 +18,7 @@ class Cell {
   }
 
   render(color) {
+    context.beginPath();
     context.rect(this.x, this.y, this.width, this.height);
     context.strokeStyle = '#000000';
     context.lineWidth = .25;
@@ -27,6 +28,7 @@ class Cell {
     context.fillStyle = '#FFFFFF';
     context.fill();
     context.stroke();
+    context.closePath();
   }
 }
 
