@@ -24,13 +24,11 @@ function max(a, b) {
 }
 
 function setup() {
-  context.clearRect(0, 0, canvas.width, canvas.height);
   grid = [];
   for(let i = 0; i <= grid_width; i++) {
     if(!(grid[i])) {
       grid[i] = [];
     }
-
     for(let j = 0; j <= grid_height; j++) {
       grid[i][j] = new Cell(i, j);
     }
