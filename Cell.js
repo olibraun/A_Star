@@ -19,10 +19,10 @@ class Cell {
 
   getNeighbors() {
     let result = [];
-    let leftLimit = max(this.i - 1, 0);
-    let rightLimit = min(this.i + 1, grid_width - 1);
-    let topLimit = max(this.j - 1, 0);
-    let bottomLimit = min(this.j + 1, grid_height - 1);
+    const leftLimit = max(this.i - 1, 0);
+    const rightLimit = min(this.i + 1, grid_width - 1);
+    const topLimit = max(this.j - 1, 0);
+    const bottomLimit = min(this.j + 1, grid_height - 1);
     for(let r = leftLimit; r <= rightLimit; r++) {
       for(let s = topLimit; s <= bottomLimit; s++) {
         if(r !== this.i || s !== this.j) {
